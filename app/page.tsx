@@ -1,6 +1,17 @@
+'use client';
+
 import { BarChart3, Users, DollarSign, Activity, Home, Settings, FileText, Bell } from 'lucide-react';
+import { useState } from 'react';
+import NewTaskModal, { TaskFormData } from './components/NewTaskModal';
 
 export default function HomePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCreateTask = (taskData: TaskFormData) => {
+    console.log('New task created:', taskData);
+    // In a real app, you would save this to a database or state management
+    // For now, we'll just log it
+  };
   const stats = [
     {
       title: 'Total Users',
@@ -42,12 +53,12 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">TaskTrack</h1>
-          <p className="text-sm text-gray-600 mt-1">Manage your tasks efficiently</p>
+      <aside className="w-64 bg-white/10 backdrop-blur-md border-r border-white/20 flex flex-col">
+        <div className="p-6 border-b border-white/20">
+          <h1 className="text-2xl font-bold text-white">TaskTrack</h1>
+          <p className="text-sm text-white/70 mt-1">Manage your tasks efficiently</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
@@ -59,8 +70,8 @@ export default function HomePage() {
       href={item.href}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
         item.active
-          ? 'bg-indigo-600 text-white'
-          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+          ? 'bg-white/20 text-white backdrop-blur-sm border border-white/30'
+          : 'text-white/70 hover:bg-white/10 hover:text-white'
       }`}
     >
       <Icon className="w-5 h-5" />
@@ -70,14 +81,14 @@ export default function HomePage() {
 })}
         </nav>
 
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-white/20">
           <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white font-semibold">
               JD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">John Doe</p>
-              <p className="text-xs text-gray-500 truncate">john@example.com</p>
+              <p className="text-sm font-medium text-white truncate">John Doe</p>
+              <p className="text-xs text-white/60 truncate">john@example.com</p>
             </div>
           </div>
         </div>
@@ -86,13 +97,16 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {/* Top Bar */}
-        <header className="bg-white border-b border-gray-200 px-8 py-6">
+        <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Welcome back, John</h2>
-              <p className="text-gray-600 mt-1">Here's what's happening with your projects today.</p>
+              <h2 className="text-2xl font-bold text-white">Welcome back, John</h2>
+              <p className="text-white/70 mt-1">Here's what's happening with your projects today.</p>
             </div>
-            <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-lg font-medium transition-colors border border-white/30"
+            >
               New Task
             </button>
           </div>
@@ -106,71 +120,71 @@ export default function HomePage() {
               return (
                 <div
                   key={stat.title}
-                  className="bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-300 hover:shadow-md transition-all"
+                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 hover:bg-white/15 hover:border-white/30 hover:shadow-lg transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <div className={`${stat.color} p-3 rounded-lg`}>
+                    <div className={`${stat.color} p-3 rounded-lg backdrop-blur-sm`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-emerald-600 text-sm font-semibold">{stat.change}</span>
+                    <span className="text-emerald-300 text-sm font-semibold">{stat.change}</span>
                   </div>
-                  <h3 className="text-gray-600 text-sm font-medium mb-1">{stat.title}</h3>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  <h3 className="text-white/70 text-sm font-medium mb-1">{stat.title}</h3>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
               );
             })}
           </div>
 
           {/* Recent Activity Table */}
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-              <p className="text-sm text-gray-600 mt-1">Latest updates from your team</p>
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden shadow-lg">
+            <div className="px-6 py-4 border-b border-white/20">
+              <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
+              <p className="text-sm text-white/70 mt-1">Latest updates from your team</p>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-white/5 backdrop-blur-sm">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">
                       User
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">
                       Action
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">
                       Time
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-white/10 bg-transparent">
                   {recentActivity.map((activity) => (
-                    <tr key={activity.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={activity.id} className="hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold">
+                          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white text-sm font-semibold">
                             {activity.user.split(' ').map(n => n[0]).join('')}
                           </div>
-                          <span className="ml-3 text-sm font-medium text-gray-900">{activity.user}</span>
+                          <span className="ml-3 text-sm font-medium text-white">{activity.user}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white/80">
                         {activity.action}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white/60">
                         {activity.time}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border backdrop-blur-sm ${
                             activity.status === 'success'
-                              ? 'bg-emerald-100 text-emerald-700'
+                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
                               : activity.status === 'warning'
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-blue-100 text-blue-700'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-400/30'
+                              : 'bg-blue-500/20 text-blue-300 border-blue-400/30'
                           }`}
                         >
                           {activity.status}
@@ -184,6 +198,13 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* New Task Modal */}
+      <NewTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateTask}
+      />
     </div>
   );
 }

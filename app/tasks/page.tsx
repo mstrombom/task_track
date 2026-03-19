@@ -1,42 +1,12 @@
+'use client';
+
 import { BarChart3, Users, Home, Settings, FileText, Bell, Plus, Search, Filter, CheckCircle2, Clock, AlertCircle, MoreVertical } from 'lucide-react';
+import { useState } from 'react';
+import NewTaskModal, { TaskFormData } from '../components/NewTaskModal';
 
 export default function TasksPage() {
-  const navItems = [
-    { name: 'Dashboard', icon: Home, href: '/', active: false },
-    { name: 'Tasks', icon: FileText, href: '/tasks', active: true },
-    { name: 'Analytics', icon: BarChart3, href: '/analytics', active: false },
-    { name: 'Notifications', icon: Bell, href: '/notifications', active: false },
-    { name: 'Settings', icon: Settings, href: '/settings', active: false },
-  ];
-
-  const taskStats = [
-    {
-      title: 'Total Tasks',
-      value: '48',
-      icon: FileText,
-      color: 'bg-indigo-500',
-    },
-    {
-      title: 'In Progress',
-      value: '12',
-      icon: Clock,
-      color: 'bg-amber-500',
-    },
-    {
-      title: 'Completed',
-      value: '28',
-      icon: CheckCircle2,
-      color: 'bg-emerald-500',
-    },
-    {
-      title: 'Overdue',
-      value: '8',
-      icon: AlertCircle,
-      color: 'bg-rose-500',
-    },
-  ];
-
-  const tasks = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tasks, setTasks] = useState([
     {
       id: 1,
       title: 'Design new landing page',
@@ -97,33 +67,82 @@ export default function TasksPage() {
       dueDate: '2026-03-10',
       tags: ['Research', 'UX'],
     },
+  ]);
+
+  const handleCreateTask = (taskData: TaskFormData) => {
+    const newTask = {
+      id: tasks.length + 1,
+      title: taskData.title,
+      description: taskData.description,
+      status: 'todo' as const,
+      priority: taskData.priority,
+      assignee: taskData.assignee || 'Unassigned',
+      dueDate: taskData.dueDate || new Date().toISOString().split('T')[0],
+      tags: taskData.tags ? taskData.tags.split(',').map(tag => tag.trim()) : [],
+    };
+    setTasks([newTask, ...tasks]);
+  };
+
+  const navItems = [
+    { name: 'Dashboard', icon: Home, href: '/', active: false },
+    { name: 'Tasks', icon: FileText, href: '/tasks', active: true },
+    { name: 'Analytics', icon: BarChart3, href: '/analytics', active: false },
+    { name: 'Notifications', icon: Bell, href: '/notifications', active: false },
+    { name: 'Settings', icon: Settings, href: '/settings', active: false },
+  ];
+
+  const taskStats = [
+    {
+      title: 'Total Tasks',
+      value: '48',
+      icon: FileText,
+      color: 'bg-indigo-500',
+    },
+    {
+      title: 'In Progress',
+      value: '12',
+      icon: Clock,
+      color: 'bg-amber-500',
+    },
+    {
+      title: 'Completed',
+      value: '28',
+      icon: CheckCircle2,
+      color: 'bg-emerald-500',
+    },
+    {
+      title: 'Overdue',
+      value: '8',
+      icon: AlertCircle,
+      color: 'bg-rose-500',
+    },
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30 backdrop-blur-sm';
       case 'in-progress':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
+        return 'bg-amber-500/20 text-amber-300 border-amber-400/30 backdrop-blur-sm';
       case 'todo':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-blue-500/20 text-blue-300 border-blue-400/30 backdrop-blur-sm';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-white/10 text-white/70 border-white/20 backdrop-blur-sm';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return 'bg-rose-100 text-rose-700 border-rose-200';
+        return 'bg-rose-500/20 text-rose-300 border-rose-400/30 backdrop-blur-sm';
       case 'high':
-        return 'bg-orange-100 text-orange-700 border-orange-200';
+        return 'bg-orange-500/20 text-orange-300 border-orange-400/30 backdrop-blur-sm';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30 backdrop-blur-sm';
       case 'low':
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-white/10 text-white/70 border-white/20 backdrop-blur-sm';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-white/10 text-white/70 border-white/20 backdrop-blur-sm';
     }
   };
 
@@ -132,12 +151,12 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">TaskTrack</h1>
-          <p className="text-sm text-gray-600 mt-1">Manage your tasks efficiently</p>
+      <aside className="w-64 bg-white/10 backdrop-blur-md border-r border-white/20 flex flex-col">
+        <div className="p-6 border-b border-white/20">
+          <h1 className="text-2xl font-bold text-white">TaskTrack</h1>
+          <p className="text-sm text-white/70 mt-1">Manage your tasks efficiently</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
@@ -149,8 +168,8 @@ export default function TasksPage() {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   item.active
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-white/20 text-white backdrop-blur-sm border border-white/30'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -160,14 +179,14 @@ export default function TasksPage() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-white/20">
           <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white font-semibold">
               JD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">John Doe</p>
-              <p className="text-xs text-gray-500 truncate">john@example.com</p>
+              <p className="text-sm font-medium text-white truncate">John Doe</p>
+              <p className="text-xs text-white/60 truncate">john@example.com</p>
             </div>
           </div>
         </div>
@@ -176,13 +195,16 @@ export default function TasksPage() {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {/* Top Bar */}
-        <header className="bg-white border-b border-gray-200 px-8 py-6">
+        <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Tasks</h2>
-              <p className="text-gray-600 mt-1">Manage and track all your tasks in one place</p>
+              <h2 className="text-2xl font-bold text-white">Tasks</h2>
+              <p className="text-white/70 mt-1">Manage and track all your tasks in one place</p>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-lg font-medium transition-colors border border-white/30"
+            >
               <Plus className="w-5 h-5" />
               New Task
             </button>
@@ -197,15 +219,15 @@ export default function TasksPage() {
               return (
                 <div
                   key={stat.title}
-                  className="bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-300 hover:shadow-md transition-all"
+                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 hover:bg-white/15 hover:border-white/30 hover:shadow-lg transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`${stat.color} p-3 rounded-lg`}>
+                    <div className={`${stat.color} p-3 rounded-lg backdrop-blur-sm`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-gray-600 text-sm font-medium">{stat.title}</h3>
-                      <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                      <h3 className="text-white/70 text-sm font-medium">{stat.title}</h3>
+                      <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
                     </div>
                   </div>
                 </div>
@@ -214,19 +236,19 @@ export default function TasksPage() {
           </div>
 
           {/* Filters and Search */}
-          <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 mb-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
                 <input
                   type="text"
                   placeholder="Search tasks..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 text-white placeholder-white/50 backdrop-blur-sm"
                 />
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <Filter className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-700 font-medium">Filters</span>
+              <button className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors backdrop-blur-sm">
+                <Filter className="w-5 h-5 text-white/70" />
+                <span className="text-white font-medium">Filters</span>
               </button>
             </div>
           </div>
@@ -236,14 +258,14 @@ export default function TasksPage() {
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className="bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-300 hover:shadow-md transition-all"
+                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 hover:bg-white/15 hover:border-white/30 hover:shadow-lg transition-all"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{task.title}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{task.description}</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">{task.title}</h3>
+                    <p className="text-sm text-white/70 mb-4">{task.description}</p>
                   </div>
-                  <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <button className="text-white/50 hover:text-white/80 transition-colors">
                     <MoreVertical className="w-5 h-5" />
                   </button>
                 </div>
@@ -252,27 +274,27 @@ export default function TasksPage() {
                   {task.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                      className="px-3 py-1 text-xs font-medium bg-white/10 text-white/80 rounded-full border border-white/20 backdrop-blur-sm"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-4 border-t border-white/20">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white text-xs font-semibold">
                       {task.assignee.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Assigned to</p>
-                      <p className="text-sm font-medium text-gray-900">{task.assignee}</p>
+                      <p className="text-xs text-white/50">Assigned to</p>
+                      <p className="text-sm font-medium text-white">{task.assignee}</p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <p className="text-xs text-gray-500">Due date</p>
-                    <p className="text-sm font-medium text-gray-900">{task.dueDate}</p>
+                    <p className="text-xs text-white/50">Due date</p>
+                    <p className="text-sm font-medium text-white">{task.dueDate}</p>
                   </div>
                 </div>
 
@@ -289,6 +311,13 @@ export default function TasksPage() {
           </div>
         </div>
       </main>
+
+      {/* New Task Modal */}
+      <NewTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateTask}
+      />
     </div>
   );
 }
